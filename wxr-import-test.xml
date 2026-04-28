@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- WordPress eXtended RSS - 全球旅报 4月1日含图文章 -->
+<!-- 原站：https://www.gtdaily.net -->
+<!-- 导出日期：2026-04-28 -->
+<!-- 包含：2篇文章（23429 上海展会、23432 金沙艺廊）+ 对应附件 2个 -->
+
+<rss version="2.0"
+    xmlns:excerpt="http://wordpress.org/export/1.2/excerpt/"
+    xmlns:content="http://purl.org/rss/1.0/modules/content/"
+    xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+    xmlns:wp="http://wordpress.org/export/1.2/"
+>
+<channel>
+    <title>全球旅报-美通国际</title>
+    <link>https://www.gtdaily.net</link>
+    <description>Global Travel Daily 旅游产业新媒体</description>
+    <pubDate>Tue, 28 Apr 2026 02:15:19 +0000</pubDate>
+    <language>zh-Hans</language>
+    <wp:wxr_version>1.2</wp:wxr_version>
+    <wp:base_site_url>https://www.gtdaily.net</wp:base_site_url>
+    <wp:base_blog_url>https://www.gtdaily.net</wp:base_blog_url>
+
+    <wp:author>
+        <wp:author_id>1</wp:author_id>
+        <wp:author_login><![CDATA[admin]]></wp:author_login>
+        <wp:author_email><![CDATA[81919810@qq.com]]></wp:author_email>
+        <wp:author_display_name><![CDATA[旅报君]]></wp:author_display_name>
+        <wp:author_first_name><![CDATA[]]></wp:author_first_name>
+        <wp:author_last_name><![CDATA[]]></wp:author_last_name>
+    </wp:author>
+
+    <!-- 文章 1/2  post_id=23429  上海国际酒店及商业空间博览会  附件→23430 -->
+    <item>
+        <title><![CDATA[上海国际酒店及商业空间、办公及公共空间博览会启幕test]]></title>
+        <link>https://www.gtdaily.net/archives/23429</link>
+        <pubDate>Wed, 01 Apr 2026 02:47:04 +0000</pubDate>
+        <dc:creator><![CDATA[admin]]></dc:creator>
+        <guid isPermaLink="false">https://www.gtdaily.net/?p=23429</guid>
+        <description></description>
+        <content:encoded><![CDATA[<!-- wp:paragraph -->
+<p>（全球旅报2026年4月1日讯）3月31日，上海旅游产业博览会集群展之——HOTEL&amp;SHOP PLUS上海国际酒店及商业空间、办公及公共空间博览会，于上海新国际博览中心启幕。本届展会深度融合三十余年积淀的酒店用品、建筑装饰、智能清洁三大专业展资源，以"场景化解决方案"为核心，系统展示建筑装饰材料、智慧酒店系统、商业空间设计、清洁运维技术等全产业链创新成果。</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:image {"align":"center","linkDestination":"custom"} -->
+<figure class="wp-block-image aligncenter"><a href="https://mma.prnasia.com/media/2964024/image1.jpg?p=publish" target="_blank" rel="noreferrer noopener"><img src="https://mma.prnasia.com/media/2964024/image1.jpg?p=medium600" alt="" title=""/></a></figure>
+<!-- /wp:image -->
+
+<!-- wp:paragraph -->
+<p>2026年展会以多个创新维度重塑观展体验——全新打造的新品类区域将集中展示具有颠覆性潜力的前瞻产品与服务；"主题特展"通过沉浸式场景构建与互动技术，深度解析行业痛点与发展趋势；而涵盖高端论坛、技术峰会、新品首发等多元形式的"智慧活动体系"，将汇聚全球产业精英与学术权威。展会同期，全球建筑、设计、酒店管理、景观工程、办公、商业运营以及清洁领域的顶尖专家与行业领袖将齐聚展会现场。他们将借助百余场主题演讲、圆桌论坛、赛事等丰富多样的活动形式，深度剖析行业动态，分享前沿洞察。</p>
+<!-- /wp:paragraph -->]]></content:encoded>
+        <excerpt:encoded><![CDATA[]]></excerpt:encoded>
+        <wp:post_id>23429</wp:post_id>
+        <wp:post_date><![CDATA[2026-04-01 10:47:04]]></wp:post_date>
+        <wp:post_date_gmt><![CDATA[2026-04-01 02:47:04]]></wp:post_date_gmt>
+        <wp:post_modified><![CDATA[2026-04-01 10:47:10]]></wp:post_modified>
+        <wp:post_modified_gmt><![CDATA[2026-04-01 02:47:10]]></wp:post_modified_gmt>
+        <wp:comment_status><![CDATA[open]]></wp:comment_status>
+        <wp:ping_status><![CDATA[open]]></wp:ping_status>
+        <wp:post_name><![CDATA[%e4%b8%8a%e6%b5%b7%e5%9b%bd%e9%99%85%e9%85%92%e5%ba%97%e5%8f%8a%e5%95%86%e4%b8%9a%e7%a9%ba%e9%97%b4%e3%80%81%e5%8a%9e%e5%85%ac%e5%8f%8a%e5%85%ac%e5%85%b1%e7%a9%ba%e9%97%b4%e5%8d%9a%e8%a7%88%e4%bc%9a]]></wp:post_name>
+        <wp:status><![CDATA[publish]]></wp:status>
+        <wp:post_parent>0</wp:post_parent>
+        <wp:menu_order>0</wp:menu_order>
+        <wp:post_type><![CDATA[post]]></wp:post_type>
+        <wp:post_password><![CDATA[]]></wp:post_password>
+        <wp:is_sticky>0</wp:is_sticky>
+        <category domain="category" nicename="%e5%b1%95%e4%bc%9a"><![CDATA[展会]]></category>
+        <wp:postmeta><wp:meta_key><![CDATA[nm_transmission_id]]></wp:meta_key><wp:meta_value><![CDATA[4923481_ZH23481]]></wp:meta_value></wp:postmeta>
+        <wp:postmeta><wp:meta_key><![CDATA[_thumbnail_id]]></wp:meta_key><wp:meta_value><![CDATA[23430]]></wp:meta_value></wp:postmeta>
+        <wp:postmeta><wp:meta_key><![CDATA[_xmlsf_image_featured]]></wp:meta_key><wp:meta_value><![CDATA[a:3:{s:3:"loc";s:48:"https://mma.prnasia.com/media/2964024/image1.jpg";s:5:"title";s:6:"image1";s:7:"caption";s:0:"";}]]></wp:meta_value></wp:postmeta>
+        <wp:postmeta><wp:meta_key><![CDATA[views]]></wp:meta_key><wp:meta_value><![CDATA[154]]></wp:meta_value></wp:postmeta>
+        <wp:postmeta><wp:meta_key><![CDATA[wb_bsl_daily_push]]></wp:meta_key><wp:meta_value><![CDATA[0]]></wp:meta_value></wp:postmeta>
+        <wp:postmeta><wp:meta_key><![CDATA[reprint]]></wp:meta_key><wp:meta_value><![CDATA[0]]></wp:meta_value></wp:postmeta>
+        <wp:postmeta><wp:meta_key><![CDATA[recommend]]></wp:meta_key><wp:meta_value><![CDATA[]]></wp:meta_value></wp:postmeta>
+        <wp:postmeta><wp:meta_key><![CDATA[slider]]></wp:meta_key><wp:meta_value><![CDATA[]]></wp:meta_value></wp:postmeta>
+        <wp:postmeta><wp:meta_key><![CDATA[from_title]]></wp:meta_key><wp:meta_value><![CDATA[]]></wp:meta_value></wp:postmeta>
+        <wp:postmeta><wp:meta_key><![CDATA[from_url]]></wp:meta_key><wp:meta_value><![CDATA[]]></wp:meta_value></wp:postmeta>
+        <wp:postmeta><wp:meta_key><![CDATA[_edit_last]]></wp:meta_key><wp:meta_value><![CDATA[1]]></wp:meta_value></wp:postmeta>
+        <wp:postmeta><wp:meta_key><![CDATA[url_in_baidu_ymd]]></wp:meta_key><wp:meta_value><![CDATA[2026-04-27 00:00:11]]></wp:meta_value></wp:postmeta>
+    </item>
+
+    <!-- 文章 2/2  post_id=23432  金沙艺廊香港艺术中环  附件→23433 -->
+    <item>
+        <title><![CDATA[金沙艺廊在香港艺术中环成功展示澳门青年艺术家作品test]]></title>
+        <link>https://www.gtdaily.net/archives/23432</link>
+        <pubDate>Wed, 01 Apr 2026 02:52:38 +0000</pubDate>
+        <dc:creator><![CDATA[admin]]></dc:creator>
+        <guid isPermaLink="false">https://www.gtdaily.net/?p=23432</guid>
+        <description></description>
+        <content:encoded><![CDATA[<!-- wp:paragraph -->
+<p>（全球旅报2026年4月1日讯）金沙中国于香港年度国际艺术盛会"艺术中环"（Art Central）设立的"金沙艺廊"展区于3月29日圆满落幕。展区一连五日气氛炽热，汇聚国际画廊代表、收藏家及艺术家驻足交流，围绕三位澳门青年艺术家——李英维、梁子毛及廖克敏的创作展开跨文化深入交流；同场展示现于澳门"金沙艺廊"举办的《流光溢彩·益隆百年》澳门炮竹时代记忆与美学特展之图鉴及炮竹包装招纸珍品。</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:image {"align":"center","linkDestination":"custom"} -->
+<figure class="wp-block-image aligncenter"><a href="https://mma.prnasia.com/media/2964027/image2.jpg?p=publish" target="_blank" rel="noreferrer noopener"><img src="https://mma.prnasia.com/media/2964027/image2.jpg?p=medium600" alt="" title="这次参展充分发挥"金沙艺廊"作为澳门国际文化窗口的桥梁角色，引领本澳艺术家于国际舞台崭露光芒，也让世界感受澳门淳厚文艺底蕴之美，成功提升了澳门文化艺术的国际知名度与影响力。"/></a></figure>
+<!-- /wp:image -->
+
+<!-- wp:paragraph -->
+<p>金沙中国为澳门首家以"联合合作伙伴"身份受邀参与香港年度国际艺术盛会"艺术中环"的综合旅游休闲企业。艺术中环本届规模创历届之最，汇聚117间画廊及逾500位国际艺术家，吸引逾40,000观众人次。</p>
+<!-- /wp:paragraph -->]]></content:encoded>
+        <excerpt:encoded><![CDATA[]]></excerpt:encoded>
+        <wp:post_id>23432</wp:post_id>
+        <wp:post_date><![CDATA[2026-04-01 10:52:38]]></wp:post_date>
+        <wp:post_date_gmt><![CDATA[2026-04-01 02:52:38]]></wp:post_date_gmt>
+        <wp:post_modified><![CDATA[2026-04-01 10:52:44]]></wp:post_modified>
+        <wp:post_modified_gmt><![CDATA[2026-04-01 02:52:44]]></wp:post_modified_gmt>
+        <wp:comment_status><![CDATA[open]]></wp:comment_status>
+        <wp:ping_status><![CDATA[open]]></wp:ping_status>
+        <wp:post_name><![CDATA[%e9%87%91%e6%b2%99%e8%89%ba%e5%bb%8a%e5%9c%a8%e9%a6%99%e6%b8%af%e8%89%ba%e6%9c%af%e4%b8%ad%e7%8e%af%e6%88%90%e5%8a%9f%e5%b1%95%e7%a4%ba%e6%be%b3%e9%97%a8%e9%9d%92%e5%b9%b4%e8%89%ba%e6%9c%af%e5%ae%b6]]></wp:post_name>
+        <wp:status><![CDATA[publish]]></wp:status>
+        <wp:post_parent>0</wp:post_parent>
+        <wp:menu_order>0</wp:menu_order>
+        <wp:post_type><![CDATA[post]]></wp:post_type>
+        <wp:post_password><![CDATA[]]></wp:post_password>
+        <wp:is_sticky>0</wp:is_sticky>
+        <category domain="category" nicename="%e5%b1%95%e8%a7%88"><![CDATA[展览]]></category>
+        <wp:postmeta><wp:meta_key><![CDATA[nm_transmission_id]]></wp:meta_key><wp:meta_value><![CDATA[4923526_ZH23526]]></wp:meta_value></wp:postmeta>
+        <wp:postmeta><wp:meta_key><![CDATA[_thumbnail_id]]></wp:meta_key><wp:meta_value><![CDATA[23433]]></wp:meta_value></wp:postmeta>
+        <wp:postmeta><wp:meta_key><![CDATA[_xmlsf_image_featured]]></wp:meta_key><wp:meta_value><![CDATA[a:3:{s:3:"loc";s:48:"https://mma.prnasia.com/media/2964027/image2.jpg";s:5:"title";s:6:"image2";s:7:"caption";s:0:"";}]]></wp:meta_value></wp:postmeta>
+        <wp:postmeta><wp:meta_key><![CDATA[views]]></wp:meta_key><wp:meta_value><![CDATA[142]]></wp:meta_value></wp:postmeta>
+        <wp:postmeta><wp:meta_key><![CDATA[wb_bsl_daily_push]]></wp:meta_key><wp:meta_value><![CDATA[0]]></wp:meta_value></wp:postmeta>
+        <wp:postmeta><wp:meta_key><![CDATA[reprint]]></wp:meta_key><wp:meta_value><![CDATA[0]]></wp:meta_value></wp:postmeta>
+        <wp:postmeta><wp:meta_key><![CDATA[recommend]]></wp:meta_key><wp:meta_value><![CDATA[]]></wp:meta_value></wp:postmeta>
+        <wp:postmeta><wp:meta_key><![CDATA[slider]]></wp:meta_key><wp:meta_value><![CDATA[]]></wp:meta_value></wp:postmeta>
+        <wp:postmeta><wp:meta_key><![CDATA[from_title]]></wp:meta_key><wp:meta_value><![CDATA[]]></wp:meta_value></wp:postmeta>
+        <wp:postmeta><wp:meta_key><![CDATA[from_url]]></wp:meta_key><wp:meta_value><![CDATA[]]></wp:meta_value></wp:postmeta>
+        <wp:postmeta><wp:meta_key><![CDATA[_edit_last]]></wp:meta_key><wp:meta_value><![CDATA[1]]></wp:meta_value></wp:postmeta>
+        <wp:postmeta><wp:meta_key><![CDATA[url_in_baidu_ymd]]></wp:meta_key><wp:meta_value><![CDATA[2026-04-27 00:00:11]]></wp:meta_value></wp:postmeta>
+    </item>
+
+    <!-- 附件 1/2  post_id=23430  父文章=23429 -->
+    <item>
+        <title><![CDATA[7aa4290dd4c879362cddc055ef0ce8c]]></title>
+        <link>https://www.gtdaily.net/archives/23429/7aa4290dd4c879362cddc055ef0ce8c</link>
+        <pubDate>Wed, 01 Apr 2026 02:45:17 +0000</pubDate>
+        <dc:creator><![CDATA[admin]]></dc:creator>
+        <guid isPermaLink="false">https://mma.prnasia.com/media/2964024/image1.jpg</guid>
+        <description></description>
+        <content:encoded><![CDATA[]]></content:encoded>
+        <excerpt:encoded><![CDATA[]]></excerpt:encoded>
+        <wp:post_id>23430</wp:post_id>
+        <wp:post_date><![CDATA[2026-04-01 10:45:17]]></wp:post_date>
+        <wp:post_date_gmt><![CDATA[2026-04-01 02:45:17]]></wp:post_date_gmt>
+        <wp:post_modified><![CDATA[2026-04-01 10:45:17]]></wp:post_modified>
+        <wp:post_modified_gmt><![CDATA[2026-04-01 02:45:17]]></wp:post_modified_gmt>
+        <wp:comment_status><![CDATA[open]]></wp:comment_status>
+        <wp:ping_status><![CDATA[closed]]></wp:ping_status>
+        <wp:post_name><![CDATA[7aa4290dd4c879362cddc055ef0ce8c]]></wp:post_name>
+        <wp:status><![CDATA[inherit]]></wp:status>
+        <wp:post_parent>23429</wp:post_parent>
+        <wp:menu_order>0</wp:menu_order>
+        <wp:post_type><![CDATA[attachment]]></wp:post_type>
+        <wp:post_password><![CDATA[]]></wp:post_password>
+        <wp:is_sticky>0</wp:is_sticky>
+        <wp:attachment_url><![CDATA[https://mma.prnasia.com/media/2964024/image1.jpg]]></wp:attachment_url>
+        <wp:postmeta><wp:meta_key><![CDATA[_wp_attached_file]]></wp:meta_key><wp:meta_value><![CDATA[2026/04/image1.jpg]]></wp:meta_value></wp:postmeta>
+        <wp:postmeta><wp:meta_key><![CDATA[_wp_attachment_metadata]]></wp:meta_key><wp:meta_value><![CDATA[a:4:{s:5:"width";i:1707;s:6:"height";i:1280;s:4:"file";s:18:"2026/04/image1.jpg";s:10:"image_meta";a:3:{s:5:"title";s:6:"image1";s:7:"caption";s:0:"";s:6:"credit";s:14:"PR Newswire";}}]]></wp:meta_value></wp:postmeta>
+    </item>
+
+    <!-- 附件 2/2  post_id=23433  父文章=23432 -->
+    <item>
+        <title><![CDATA[image2]]></title>
+        <link>https://www.gtdaily.net/archives/23432/attachment/image2</link>
+        <pubDate>Wed, 01 Apr 2026 02:50:59 +0000</pubDate>
+        <dc:creator><![CDATA[admin]]></dc:creator>
+        <guid isPermaLink="false">https://mma.prnasia.com/media/2964027/image2.jpg</guid>
+        <description></description>
+        <content:encoded><![CDATA[]]></content:encoded>
+        <excerpt:encoded><![CDATA[金沙中国于香港年度国际艺术盛会"艺术中环"（Art Central）设立的"金沙艺廊"展区于3月29日圆满落幕。艺术中环本届规模创历届之最，汇聚117间画廊及逾500位国际艺术家，吸引逾40,000观众人次。]]></excerpt:encoded>
+        <wp:post_id>23433</wp:post_id>
+        <wp:post_date><![CDATA[2026-04-01 10:50:59]]></wp:post_date>
+        <wp:post_date_gmt><![CDATA[2026-04-01 02:50:59]]></wp:post_date_gmt>
+        <wp:post_modified><![CDATA[2026-04-01 10:50:59]]></wp:post_modified>
+        <wp:post_modified_gmt><![CDATA[2026-04-01 02:50:59]]></wp:post_modified_gmt>
+        <wp:comment_status><![CDATA[open]]></wp:comment_status>
+        <wp:ping_status><![CDATA[closed]]></wp:ping_status>
+        <wp:post_name><![CDATA[image2]]></wp:post_name>
+        <wp:status><![CDATA[inherit]]></wp:status>
+        <wp:post_parent>23432</wp:post_parent>
+        <wp:menu_order>0</wp:menu_order>
+        <wp:post_type><![CDATA[attachment]]></wp:post_type>
+        <wp:post_password><![CDATA[]]></wp:post_password>
+        <wp:is_sticky>0</wp:is_sticky>
+        <wp:attachment_url><![CDATA[https://mma.prnasia.com/media/2964027/image2.jpg]]></wp:attachment_url>
+        <wp:postmeta><wp:meta_key><![CDATA[_wp_attached_file]]></wp:meta_key><wp:meta_value><![CDATA[2026/04/image2.jpg]]></wp:meta_value></wp:postmeta>
+        <wp:postmeta><wp:meta_key><![CDATA[_wp_attachment_metadata]]></wp:meta_key><wp:meta_value><![CDATA[a:4:{s:5:"width";i:2560;s:6:"height";i:1439;s:4:"file";s:18:"2026/04/image2.jpg";s:10:"image_meta";a:3:{s:5:"title";s:6:"image2";s:7:"caption";s:0:"";s:6:"credit";s:14:"PR Newswire";}}]]></wp:meta_value></wp:postmeta>
+    </item>
+
+</channel>
+</rss>
