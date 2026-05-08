@@ -1,0 +1,1 @@
+{"root":["./src/main.tsx","./src/types.ts","./src/components/batchselector.tsx","./src/components/publishcontrols.tsx","./src/components/statscards.tsx","./src/components/configpanel/index.tsx","./src/components/recordlist/recordcard.tsx","./src/components/recordlist/index.tsx","./src/hooks/usestream.ts","./src/pages/dashboard.tsx","./src/services/api.ts"],"version":"5.9.3"}

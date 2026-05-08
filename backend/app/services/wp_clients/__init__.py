@@ -1,0 +1,2 @@
+"""WordPress publisher clients."""
+

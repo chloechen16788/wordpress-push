@@ -1,0 +1,45 @@
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+.venv/
+venv/
+env/
+
+# Node / Frontend
+node_modules/
+frontend/node_modules/
+frontend/dist/
+
+# IDE
+.idea/
+.vscode/
+
+# Env / Secrets
+.env
+.env.*
+!.env.example
+
+# Runtime / local DB / logs
+*.log
+*.sqlite
+*.sqlite3
+backend/backend/data/
+backend/data/
+
+# Local generated data
+input/
+output/
+state/
+temp/
+
