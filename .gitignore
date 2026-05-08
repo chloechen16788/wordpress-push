@@ -43,3 +43,20 @@ output/
 state/
 temp/
 
+# Legacy root scripts/files (not part of frontend/backend delivery)
+README.md
+app.py
+main.py
+config.py
+amp_to_wp_input.py
+wp_batch_import.py
+wp_batch_import_cookie_nonce.py
+wp_rest_client.py
+press-flow-v3-final.html
+
+# Old local test artifacts
+teat001.png
+teat003.png
+test.py
+wxr-import-test.xml
+
