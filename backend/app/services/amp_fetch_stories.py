@@ -1,5 +1,6 @@
 import argparse
 import json
+import os
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
@@ -13,6 +14,7 @@ def resolve_path(raw: str, cwd: Path) -> Path:
 
 
 def load_state(path: Path) -> Dict[str, Any]:
+    """读取分页游标状态文件；不存在时返回初始状态。"""
     if not path.exists():
         return {
             "cursor_create_time": None,
@@ -24,12 +26,14 @@ def load_state(path: Path) -> Dict[str, Any]:
 
 
 def save_state(path: Path, state: Dict[str, Any]) -> None:
+    """持久化分页游标状态，用于断点续拉。"""
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8") as f:
         json.dump(state, f, ensure_ascii=False, indent=2)
 
 
 def append_jsonl(path: Path, rows: List[Dict[str, Any]]) -> None:
+    """将一批记录追加写入 JSONL。"""
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("a", encoding="utf-8") as f:
         for row in rows:
@@ -41,7 +45,22 @@ def build_sql(
     has_end: bool,
     has_cursor: bool,
 ) -> str:
-    where_parts: List[str] = ["LENGTH(s.transmission_id) = 15"]
+    """按参数动态拼接 SQL 条件。
+
+    说明：
+    - transmission_id 长度=15：过滤目标稿件
+    - transmission_id 包含 ZH：限制中文站点稿件
+    - 排除 NOT_SEND_CN_MAINLAND：过滤不发中国大陆稿件
+    - send_website_flag=1：仅取可发站点稿件
+    - 时间窗：按 start/end 过滤
+    - 游标：按 create_time + story_id 倒序翻页，避免重复/漏数
+    """
+    where_parts: List[str] = [
+        "LENGTH(s.transmission_id) = 15",
+        "s.transmission_id LIKE %s",
+        "s.special_flag != %s",
+        "s.send_website_flag = %s",
+    ]
     if has_start:
         where_parts.append("s.create_time >= %s")
     if has_end:
@@ -87,13 +106,14 @@ def fetch_batch(
     cursor_story_id: Optional[int],
     batch_size: int,
 ) -> List[Dict[str, Any]]:
+    """查询一页 AMP 稿件数据。"""
     has_cursor = bool(cursor_create_time and cursor_story_id is not None)
     sql = build_sql(
         has_start=bool(start_time),
         has_end=bool(end_time),
         has_cursor=has_cursor,
     )
-    params: List[Any] = []
+    params: List[Any] = ["%ZH%", "NOT_SEND_CN_MAINLAND", 1]  # 与 build_sql 中 %s 的顺序保持一致
     if start_time:
         params.append(start_time)
     if end_time:
@@ -108,6 +128,7 @@ def fetch_batch(
 
 
 def normalize_rows(rows: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    """将 SQL 原始字段映射为系统统一字段结构。"""
     out: List[Dict[str, Any]] = []
     for row in rows:
         create_time = row.get("create_time")
@@ -133,12 +154,13 @@ def normalize_rows(rows: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
 
 
 def parse_args() -> argparse.Namespace:
+    """命令行参数定义。"""
     parser = argparse.ArgumentParser(description="Fetch AMP stories into JSONL.")
-    parser.add_argument("--host", default="139.198.21.183")
-    parser.add_argument("--port", type=int, default=3460)
-    parser.add_argument("--user", default="prnqa")
-    parser.add_argument("--password", default="Comeon2019_prn")
-    parser.add_argument("--database", default="media")
+    parser.add_argument("--host", default=os.getenv("PRESS_AMP_HOST", "139.198.21.183"))
+    parser.add_argument("--port", type=int, default=int(os.getenv("PRESS_AMP_PORT", "3460")))
+    parser.add_argument("--user", default=os.getenv("PRESS_AMP_USER", "prnqa"))
+    parser.add_argument("--password", default=os.getenv("PRESS_AMP_PASSWORD", ""))
+    parser.add_argument("--database", default=os.getenv("PRESS_AMP_DATABASE", "media"))
     parser.add_argument("--start-time", default=None, help="YYYY-MM-DD HH:MM:SS")
     parser.add_argument("--end-time", default=None, help="YYYY-MM-DD HH:MM:SS")
     parser.add_argument("--batch-size", type=int, default=200)
@@ -159,11 +181,15 @@ def parse_args() -> argparse.Namespace:
 
 
 def main() -> int:
+    """CLI 入口：分页拉取 AMP 数据并保存 JSONL 与状态文件。"""
     args = parse_args()
+    if not args.password:
+        raise SystemExit("AMP password is required. Use --password or set PRESS_AMP_PASSWORD.")
     cwd = Path.cwd()
     output_path = resolve_path(args.output, cwd)
     state_path = resolve_path(args.state, cwd)
 
+    # --resume 时从状态文件续跑；否则从头开始。
     state = load_state(state_path) if args.resume else {
         "cursor_create_time": None,
         "cursor_story_id": None,
@@ -186,7 +212,7 @@ def main() -> int:
         write_timeout=20,
     )
 
-    fetched_total = 0
+    fetched_total = 0  # 本次运行累计抓取数（与状态文件中的历史累计区分）
     try:
         while True:
             rows = fetch_batch(
@@ -203,6 +229,7 @@ def main() -> int:
             normalized = normalize_rows(rows)
             append_jsonl(output_path, normalized)
 
+            # 使用最后一条记录更新游标，下一页继续按倒序往后翻。
             last = rows[-1]
             cursor_time = last.get("create_time")
             if isinstance(cursor_time, datetime):
@@ -221,6 +248,7 @@ def main() -> int:
                 f"cursor=({state['cursor_create_time']}, {state['cursor_story_id']})"
             )
 
+            # 命中上限后提前结束，避免单次抓取过大。
             if args.max_rows > 0 and fetched_total >= args.max_rows:
                 print(f"Reached max rows limit: {args.max_rows}")
                 break
