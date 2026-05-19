@@ -13,11 +13,18 @@ function statusClass(status: string): string {
 type Props = {
   item: RecordItem;
   selected: boolean;
+  showPublishActions: boolean;
   onToggleSelect: (checked: boolean) => void;
   onPublishOne: () => void;
 };
 
-export function RecordCard({ item, selected, onToggleSelect, onPublishOne }: Props) {
+export function RecordCard({
+  item,
+  selected,
+  showPublishActions,
+  onToggleSelect,
+  onPublishOne,
+}: Props) {
   const [expandedOriginal, setExpandedOriginal] = useState(false);
   const [expandedEdited, setExpandedEdited] = useState(false);
   const titleCandidates = useMemo(
@@ -29,11 +36,13 @@ export function RecordCard({ item, selected, onToggleSelect, onPublishOne }: Pro
     <article className="record-card">
       <header className="record-head">
         <div className="row">
-          <input
-            type="checkbox"
-            checked={selected}
-            onChange={(e) => onToggleSelect(e.target.checked)}
-          />
+          {showPublishActions ? (
+            <input
+              type="checkbox"
+              checked={selected}
+              onChange={(e) => onToggleSelect(e.target.checked)}
+            />
+          ) : null}
           <div>
           <div className="mono">ID: {item.original_id}</div>
           <div className="subtle">{new Date(item.fetched_at).toLocaleString()}</div>
@@ -91,9 +100,9 @@ export function RecordCard({ item, selected, onToggleSelect, onPublishOne }: Pro
               {ps.platform_name}:{ps.status}
             </a>
           ))}
-          {item.publish_item_id ? (
+          {showPublishActions && item.publish_item_id ? (
             <button className="btn-mini" onClick={onPublishOne}>
-              单条发布原文
+              单条发布
             </button>
           ) : null}
         </div>

@@ -57,6 +57,13 @@ def run_test_batch(
     db.commit()
     db.refresh(batch)
 
+    llm_runtime = get_llm_runtime(db)
+    if not (llm_runtime.get("api_key") or "").strip():
+        batch.status = "failed"
+        db.add(batch)
+        db.commit()
+        raise ValueError("未配置 LLM API Key，无法进行改写")
+
     records = fetch_amp_records(db, start_time=start_time, end_time=end_time, max_rows=500)
     source_snapshots: list[dict] = []
     rewritten_count = 0
@@ -86,7 +93,6 @@ def run_test_batch(
             }
         )
 
-    llm_runtime = get_llm_runtime(db)
     llm_outputs: dict[int, dict] = {}
     max_workers = max(1, min(settings.llm_max_concurrency, len(source_snapshots) or 1))
     with ThreadPoolExecutor(max_workers=max_workers) as pool:
@@ -108,10 +114,10 @@ def run_test_batch(
             source_id = future_map[future]
             try:
                 llm_outputs[source_id] = future.result()["result"]
-            except Exception:  # noqa: BLE001
+            except Exception as exc:  # noqa: BLE001
                 llm_outputs[source_id] = {
                     "is_adopted": "否",
-                    "adoption_reason": "LLM 并发调用失败，已跳过该条。",
+                    "adoption_reason": f"LLM 调用失败：{exc}",
                 }
 
     for s in source_snapshots:
@@ -140,8 +146,8 @@ def run_test_batch(
                 status=status,
                 publish_payload_json=json.dumps(
                     {
-                        "publish_title": s["title"],
-                        "publish_content": s["body"],
+                        "publish_title": llm_output.get("headline_1") or s["title"],
+                        "publish_content": llm_output.get("edited_article") or "",
                     },
                     ensure_ascii=False,
                 ),

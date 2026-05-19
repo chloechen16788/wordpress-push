@@ -13,6 +13,21 @@ body {
   gap: 16px;
   padding: 16px;
   overflow-x: hidden;
+  position: relative;
+}
+
+.secret-trigger {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 100;
+  width: 48px;
+  height: 48px;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: default;
 }
 
 .main { display: flex; flex-direction: column; gap: 12px; min-width: 0; }

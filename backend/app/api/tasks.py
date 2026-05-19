@@ -82,12 +82,15 @@ def run_test(payload: RunTestRequest, db: Session = Depends(get_db)) -> RunTestR
     task = db.get(Task, payload.task_id)
     if task is None:
         raise HTTPException(status_code=404, detail="task not found")
-    batch = run_test_batch(
-        db,
-        task_id=payload.task_id,
-        start_time=payload.start_time,
-        end_time=payload.end_time,
-    )
+    try:
+        batch = run_test_batch(
+            db,
+            task_id=payload.task_id,
+            start_time=payload.start_time,
+            end_time=payload.end_time,
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
     return RunTestResponse(
         task_id=payload.task_id,
         batch_id=batch.id,

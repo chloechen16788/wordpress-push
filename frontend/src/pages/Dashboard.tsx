@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { BatchSelector } from "../components/BatchSelector";
 import { ConfigPanel } from "../components/ConfigPanel";
@@ -35,6 +35,21 @@ export function Dashboard() {
     system_prompt: "",
   });
   const [platforms, setPlatforms] = useState<any[]>([]);
+  const [showSourceConfig, setShowSourceConfig] = useState(false);
+  const secretClickRef = useRef({ count: 0, lastAt: 0 });
+
+  function handleSecretTripleClick() {
+    const now = Date.now();
+    if (now - secretClickRef.current.lastAt > 600) {
+      secretClickRef.current.count = 0;
+    }
+    secretClickRef.current.lastAt = now;
+    secretClickRef.current.count += 1;
+    if (secretClickRef.current.count >= 3) {
+      secretClickRef.current.count = 0;
+      setShowSourceConfig((v) => !v);
+    }
+  }
 
   const activeBatch = useMemo(
     () => batches.find((b) => b.id === activeBatchId) ?? null,
@@ -102,10 +117,16 @@ export function Dashboard() {
     });
   }, [activeBatchId, tab]);
 
+  const showPublishActions = tab === "pending";
+
   useStream(activeTaskId, activeBatchId, {
     onBatchProgress: (data) => {
       setPublishing(true);
       setProgress(data.percent ?? 0);
+    },
+    onStreamError: () => {
+      setPublishing(false);
+      setProgress(0);
     },
     onBatchDone: () => {
       setPublishing(false);
@@ -128,6 +149,13 @@ export function Dashboard() {
 
   return (
     <div className="layout">
+      <button
+        type="button"
+        className="secret-trigger"
+        aria-label="高级配置"
+        title=""
+        onClick={handleSecretTripleClick}
+      />
       <ConfigPanel
         mode={mode}
         onModeChange={setMode}
@@ -152,6 +180,7 @@ export function Dashboard() {
           alert("配置已保存");
         }}
         runningTest={runningTest}
+        showSourceConfig={showSourceConfig}
         onRunTest={async (start, end) => {
           if (!activeTaskId) return;
           try {
@@ -179,6 +208,7 @@ export function Dashboard() {
               currentBatchId={activeBatchId}
               onChange={setActiveBatchId}
             />
+            {showPublishActions ? (
             <PublishControls
               mode={mode}
               loading={publishing}
@@ -194,15 +224,22 @@ export function Dashboard() {
                   )
                   .map((r) => r.publish_item_id!) as number[];
                 if (readySelectedIds.length === 0) {
-                  alert("请先勾选要发布的条目");
+                  alert("请先勾选要发布的条目（可使用下方「全选本页」）");
                   return;
                 }
-                setPublishing(true);
-                setProgress(0);
-                await api.publishSelected(activeTaskId, activeBatchId, readySelectedIds);
-                alert(`已触发批量发布，共 ${readySelectedIds.length} 条`);
+                try {
+                  setPublishing(true);
+                  setProgress(0);
+                  await api.publishSelected(activeTaskId, activeBatchId, readySelectedIds);
+                  alert(`已触发批量发布，共 ${readySelectedIds.length} 条，请等待进度完成`);
+                } catch {
+                  setPublishing(false);
+                  setProgress(0);
+                  alert("批量发布启动失败，请检查后端日志");
+                }
               }}
             />
+            ) : null}
           </div>
         </header>
         <StatsCards
@@ -224,29 +261,32 @@ export function Dashboard() {
           >
             已发布历史
           </button>
-          <label className="check-all">
-            <input
-              type="checkbox"
-              checked={
-                records.filter((r) => r.publish_item_id && r.publish_status === "ready_to_publish")
-                  .length > 0 &&
-                records
-                  .filter((r) => r.publish_item_id && r.publish_status === "ready_to_publish")
-                  .every((r) => selectedItemIds.includes(r.publish_item_id!))
-              }
-              onChange={(e) => {
-                const readyIds = records
-                  .filter((r) => r.publish_item_id && r.publish_status === "ready_to_publish")
-                  .map((r) => r.publish_item_id!) as number[];
-                if (e.target.checked) setSelectedItemIds(readyIds);
-                else setSelectedItemIds([]);
-              }}
-            />
-            全选本页
-          </label>
+          {showPublishActions ? (
+            <label className="check-all">
+              <input
+                type="checkbox"
+                checked={
+                  records.filter((r) => r.publish_item_id && r.publish_status === "ready_to_publish")
+                    .length > 0 &&
+                  records
+                    .filter((r) => r.publish_item_id && r.publish_status === "ready_to_publish")
+                    .every((r) => selectedItemIds.includes(r.publish_item_id!))
+                }
+                onChange={(e) => {
+                  const readyIds = records
+                    .filter((r) => r.publish_item_id && r.publish_status === "ready_to_publish")
+                    .map((r) => r.publish_item_id!) as number[];
+                  if (e.target.checked) setSelectedItemIds(readyIds);
+                  else setSelectedItemIds([]);
+                }}
+              />
+              全选本页
+            </label>
+          ) : null}
         </div>
         <RecordList
           items={records}
+          showPublishActions={showPublishActions}
           selectedIds={selectedItemIds}
           onToggleSelect={(publishItemId, checked) => {
             setSelectedItemIds((prev) =>
@@ -254,9 +294,15 @@ export function Dashboard() {
             );
           }}
           onPublishOne={async (publishItemId) => {
-            await api.publishItem(publishItemId);
-            setPublishing(true);
-            setProgress(0);
+            try {
+              setPublishing(true);
+              setProgress(0);
+              await api.publishItem(publishItemId);
+            } catch {
+              setPublishing(false);
+              setProgress(0);
+              alert("单条发布启动失败");
+            }
           }}
         />
       </main>

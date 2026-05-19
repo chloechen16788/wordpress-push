@@ -2,6 +2,17 @@ import { useState } from "react";
 
 import { api } from "../../services/api";
 
+function toDatetimeLocalValue(date: Date): string {
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+}
+
+function getLast24HoursRange(): { start: string; end: string } {
+  const end = new Date();
+  const start = new Date(end.getTime() - 24 * 60 * 60 * 1000);
+  return { start: toDatetimeLocalValue(start), end: toDatetimeLocalValue(end) };
+}
+
 type SourceConfig = {
   amp_host: string;
   amp_port: number;
@@ -39,6 +50,7 @@ type Props = {
   onPlatformsUpdated: (rows: PlatformItem[]) => void;
   onSaveAll: () => void;
   runningTest: boolean;
+  showSourceConfig: boolean;
 };
 
 export function ConfigPanel({
@@ -55,9 +67,11 @@ export function ConfigPanel({
   onPlatformsUpdated,
   onSaveAll,
   runningTest,
+  showSourceConfig,
 }: Props) {
-  const [startTime, setStartTime] = useState("");
-  const [endTime, setEndTime] = useState("");
+  const defaultRange = getLast24HoursRange();
+  const [startTime, setStartTime] = useState(defaultRange.start);
+  const [endTime, setEndTime] = useState(defaultRange.end);
   const [addingPlatform, setAddingPlatform] = useState(false);
   const [newName, setNewName] = useState("");
   const [newSiteUrl, setNewSiteUrl] = useState("");
@@ -183,8 +197,9 @@ export function ConfigPanel({
         />
       </div>
 
-      <div className="field">
-        <label className="label-title">数据源与分发目标</label>
+      {showSourceConfig ? (
+        <div className="field">
+          <label className="label-title">数据源与分发目标</label>
         <div className="grid-two">
           <input
             className="oc-input"
@@ -225,7 +240,10 @@ export function ConfigPanel({
           onChange={(e) => onSourceChange({ ...sourceConfig, amp_database: e.target.value })}
           placeholder="AMP Database"
         />
+        </div>
+      ) : null}
 
+      <div className="field">
         <div className="platform-section">
           <div className="platform-section-head">
             <span className="label-title inline">WordPress 发布目标</span>

@@ -1,9 +1,19 @@
+from pathlib import Path
+
 from sqlalchemy import select, text
 from sqlalchemy.orm import Session
 
 from app.core.config import get_settings
 from app.db.session import Base, engine
 from app.models import LLMConfig, SourceConfig
+
+_PROMPT_FILE = Path(__file__).resolve().parents[1] / "prompts" / "news_rewrite_system_prompt.txt"
+
+
+def _default_system_prompt() -> str:
+    if _PROMPT_FILE.is_file():
+        return _PROMPT_FILE.read_text(encoding="utf-8")
+    return ""
 
 
 def _migrate_sqlite_schema() -> None:
@@ -51,7 +61,7 @@ def init_db() -> None:
                     model=settings.llm_model,
                     api_key=settings.llm_api_key,
                     base_url=settings.llm_base_url,
-                    system_prompt="",
+                    system_prompt=_default_system_prompt(),
                 )
             )
         elif not llm_cfg.base_url:

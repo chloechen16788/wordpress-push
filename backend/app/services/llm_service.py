@@ -23,20 +23,6 @@ class LLMInput:
     account_name: str | None = None
 
 
-def _make_dateline(category: str, now: datetime) -> str:
-    date_str = now.strftime("%Y年%m月%d日")
-    mapping = {
-        "知消": f"(知消 {date_str}日讯)",
-        "旅游": f"(全球旅报 {date_str}日讯)",
-        "TMT": f"(全球TMT {date_str}日讯)",
-        "医药": f"(医药健闻 {date_str}日讯)",
-        "财见": f"(财见 {date_str}日讯)",
-        "能动": f"(能动Nengdong {date_str}日讯)",
-        "其他": f"(其他 {date_str}日讯)",
-    }
-    return mapping.get(category, mapping["其他"])
-
-
 def _guess_category(text: str) -> str:
     low = text.lower()
     if any(x in low for x in ("chip", "ai", "internet", "technology", "半导体", "芯片", "科技")):
@@ -52,39 +38,6 @@ def _guess_category(text: str) -> str:
     if any(x in low for x in ("零售", "消费", "食品", "化妆", "retail")):
         return "知消"
     return "其他"
-
-
-def _mock_rewrite_news(item: LLMInput) -> dict:
-    text = f"{item.title}\n{item.body}"
-    is_noise = bool(re.search(r"(广告|促销|领券|限时特惠)", text))
-    if is_noise:
-        return {
-            "result": {
-                "is_adopted": "否",
-                "adoption_reason": "稿件含明显促销营销信息，判定为噪音内容。",
-            }
-        }
-
-    category = _guess_category(text)
-    dateline = _make_dateline(category, datetime.now())
-    cleaned_body = item.body.strip().replace("\r\n", "\n")
-    first_paragraph = cleaned_body.split("\n")[0][:160]
-
-    output = {
-        "result": {
-            "original_id": item.original_id,
-            "is_adopted": "是",
-            "adoption_reason": "稿件包含可核实事件信息，具备新闻价值。",
-            "industry_category": category,
-            "edited_article": f"{dateline}{item.title}\n\n{cleaned_body[:1200]}",
-            "news_brief": f"{first_paragraph} (美通社)",
-            "headline_1": item.title[:30],
-            "headline_2": f"{item.title[:22]}：行业动态",
-            "headline_3": f"{item.title[:20]}，持续跟进",
-        }
-    }
-    json.dumps(output, ensure_ascii=False)
-    return output
 
 
 def _extract_json_obj(text: str) -> dict[str, Any]:
@@ -107,7 +60,6 @@ def _normalize_result(item: LLMInput, result: dict[str, Any]) -> dict[str, Any]:
         "adoption_reason": str(result.get("adoption_reason", "")),
         "industry_category": result.get("industry_category") or _guess_category(f"{item.title}\n{item.body}"),
         "edited_article": str(result.get("edited_article", "")).strip(),
-        "news_brief": str(result.get("news_brief", "")).strip(),
         "headline_1": str(result.get("headline_1", item.title[:30])).strip(),
         "headline_2": str(result.get("headline_2", f"{item.title[:22]}：行业动态")).strip(),
         "headline_3": str(result.get("headline_3", f"{item.title[:20]}，持续跟进")).strip(),
@@ -127,7 +79,6 @@ def _is_result_complete(result: dict[str, Any]) -> bool:
     required_fields = (
         "industry_category",
         "edited_article",
-        "news_brief",
         "headline_1",
         "headline_2",
         "headline_3",
@@ -136,8 +87,6 @@ def _is_result_complete(result: dict[str, Any]) -> bool:
         if not str(result.get(field, "")).strip():
             return False
     if str(result.get("industry_category")) not in VALID_CATEGORIES:
-        return False
-    if "(美通社)" not in str(result.get("news_brief", "")):
         return False
     return True
 
@@ -148,7 +97,6 @@ def _prompt_for_rewrite(item: LLMInput, system_prompt: str) -> tuple[str, str]:
         "adoption_reason": "string",
         "industry_category": "TMT/能动/旅游/财见/医药/知消/其他",
         "edited_article": "string",
-        "news_brief": "string",
         "headline_1": "string",
         "headline_2": "string",
         "headline_3": "string",
@@ -166,9 +114,8 @@ def _prompt_for_rewrite(item: LLMInput, system_prompt: str) -> tuple[str, str]:
         "2) 所有字符串字段必须是非空字符串，禁止 null、空字符串、'N/A'、'-'。\n"
         "3) is_adopted 只能是 '是' 或 '否'。\n"
         "4) industry_category 只能是：知消/旅游/TMT/医药/财见/能动/其他。\n"
-        "5) 当 is_adopted='是' 时，必须完整返回 industry_category/edited_article/news_brief/headline_1/2/3。\n"
-        "6) news_brief 必须以 '(美通社)' 结尾。\n"
-        "7) headline_1/2/3 每条不超过30字。\n\n"
+        "5) 当 is_adopted='是' 时，必须完整返回 industry_category/edited_article/headline_1/2/3。\n"
+        "6) headline_1/2/3 每条不超过30字。\n\n"
         "输入新闻：\n"
         f"original_id: {item.original_id}\n"
         f"title: {item.title}\n"
@@ -240,7 +187,7 @@ def _call_aliyun_qwen(
     # 二次纠偏：要求模型只做 JSON 修复，不引入新解释文字
     repair_prompt = (
         "请将下面的 JSON 修复为严格合规版本，仅返回一个 JSON 对象，格式为 {\"result\": {...}}，"
-        "并满足：字段完整、字符串非空、分类合法、news_brief 以(美通社)结尾。\n\n"
+        "并满足：字段完整、字符串非空、分类合法。\n\n"
         f"待修复JSON:\n{json.dumps({'result': normalized}, ensure_ascii=False)}"
     )
     repair_payload = {
@@ -316,28 +263,20 @@ def rewrite_news(
     runtime: dict[str, str | None] | None = None,
 ) -> dict:
     runtime = runtime or get_llm_runtime(db)
-    provider = (runtime["provider"] or "mock").lower()
-    api_key = runtime["api_key"]
+    api_key = (runtime.get("api_key") or "").strip()
     base_url = runtime["base_url"] or "https://dashscope.aliyuncs.com/compatible-mode/v1"
     model = runtime["model"] or "qwen-plus"
     system_prompt = runtime["system_prompt"] or ""
 
-    should_use_mock = provider == "mock" and not api_key
-    if should_use_mock:
-        return _mock_rewrite_news(item)
+    if not api_key:
+        raise RuntimeError("未配置 LLM API Key，无法进行改写")
 
-    try:
-        if not api_key:
-            raise RuntimeError("llm api_key is empty")
-        result = _call_aliyun_qwen(
-            api_key=api_key,
-            base_url=base_url,
-            model=model,
-            system_prompt=system_prompt,
-            item=item,
-        )
-        return {"result": result}
-    except Exception:
-        # 若外部 LLM 调用失败，降级回本地 mock，避免阻塞整个批次流程
-        return _mock_rewrite_news(item)
+    result = _call_aliyun_qwen(
+        api_key=api_key,
+        base_url=base_url,
+        model=model,
+        system_prompt=system_prompt,
+        item=item,
+    )
+    return {"result": result}
 

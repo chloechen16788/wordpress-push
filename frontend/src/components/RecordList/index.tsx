@@ -4,6 +4,7 @@ import { RecordCard } from "./RecordCard";
 type Props = {
   items: RecordItem[];
   selectedIds: number[];
+  showPublishActions: boolean;
   onToggleSelect: (publishItemId: number, checked: boolean) => void;
   onPublishOne: (publishItemId: number) => void;
 };
@@ -11,6 +12,7 @@ type Props = {
 export function RecordList({
   items,
   selectedIds,
+  showPublishActions,
   onToggleSelect,
   onPublishOne,
 }: Props) {
@@ -23,6 +25,7 @@ export function RecordList({
         <RecordCard
           key={item.source_record_id}
           item={item}
+          showPublishActions={showPublishActions}
           selected={Boolean(item.publish_item_id && selectedIds.includes(item.publish_item_id))}
           onToggleSelect={(checked) => {
             if (!item.publish_item_id) return;

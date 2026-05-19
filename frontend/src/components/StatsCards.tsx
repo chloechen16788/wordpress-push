@@ -19,7 +19,7 @@ export function StatsCards({
         <div className="value">#{batchId ?? "-"}</div>
       </div>
       <div className="card">
-        <div className="label">已转写落库</div>
+        <div className="label">待发布</div>
         <div className="value">{rewrittenCount}</div>
       </div>
       <div className="card">

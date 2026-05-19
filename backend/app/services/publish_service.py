@@ -1,9 +1,11 @@
 import asyncio
 import json
 import threading
+import time
+import urllib.error
 from collections import defaultdict
 from datetime import datetime
-from typing import Callable
+from typing import Any, Callable
 
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
@@ -23,6 +25,39 @@ CATEGORY_KEYWORDS: dict[str, tuple[str, ...]] = {
     "医药": ("医药", "健闻", "mhn"),
     "其他": ("其他",),
 }
+
+# 504 网关超时时额外重试次数（共尝试 1 + 2 = 3 次）
+PUBLISH_504_MAX_RETRIES = 2
+PUBLISH_504_RETRY_BASE_DELAY_SEC = 1.5
+
+
+def _is_gateway_timeout_error(exc: BaseException) -> bool:
+    if isinstance(exc, urllib.error.HTTPError):
+        return exc.code == 504
+    text = str(exc).lower()
+    return "504" in text and ("gateway" in text or "time-out" in text or "timeout" in text)
+
+
+def _publish_post_with_media(
+    publisher: Any,
+    *,
+    title: str,
+    content: str,
+    thumbnail_url: str | None,
+) -> tuple[dict, list[int]]:
+    media_ids: list[int] = []
+    featured_media_id: int | None = None
+    if thumbnail_url:
+        uploaded_media = publisher.upload_media_from_url(thumbnail_url)
+        featured_media_id = int(uploaded_media["id"])
+        media_ids.append(featured_media_id)
+    post = publisher.create_post(
+        title=title,
+        content=content,
+        status="draft",
+        featured_media_id=featured_media_id,
+    )
+    return post, media_ids
 
 
 def _publisher(platform: Platform):
@@ -46,6 +81,18 @@ def _guess_platform_category(name: str) -> str | None:
         if any(key.lower() in name_low for key in keys):
             return category
     return None
+
+
+def _resolve_publish_payload(source_record, ai_result) -> tuple[str, str, str | None]:
+    """发布用标题、正文、特色图 URL。正文必须为改写稿；标题优先 headline_1。"""
+    if ai_result is None:
+        raise ValueError("缺少 AI 改写结果，无法发布")
+    content = (ai_result.edited_article or "").strip()
+    if not content:
+        raise ValueError("改写正文为空，无法发布")
+    title = (ai_result.headline_1 or "").strip() or source_record.original_title
+    thumbnail_url = source_record.thumbnail_url
+    return title, content, thumbnail_url
 
 
 def _update_batch_stats(db: Session, batch_id: int) -> None:
@@ -120,7 +167,36 @@ async def publish_batch(
             item = db.get(PublishItem, item_id)
             if item is None:
                 continue
-            ai_result = item.source_record.ai_result
+            source_record = item.source_record
+            ai_result = source_record.ai_result
+            try:
+                publish_title, publish_content, publish_thumbnail_url = _resolve_publish_payload(
+                    source_record, ai_result
+                )
+            except ValueError as exc:
+                reason = str(exc)
+                item.status = "failed"
+                item.error_msg = reason
+                db.add(item)
+                db.commit()
+                await stream_hub.publish(
+                    f"{task_id}:{batch_id}",
+                    "item_status",
+                    {"publish_item_id": item_id, "status": "failed"},
+                )
+                processed += 1
+                await stream_hub.publish(
+                    f"{task_id}:{batch_id}",
+                    "batch_progress",
+                    {
+                        "batch_id": batch_id,
+                        "processed": processed,
+                        "total": total,
+                        "percent": int((processed / total) * 100),
+                    },
+                )
+                continue
+
             category = ai_result.industry_category if ai_result else None
             target_platforms = platforms_by_category.get(category or "其他", [])
             if not target_platforms and category != "其他":
@@ -158,9 +234,6 @@ async def publish_batch(
                 item = db.get(PublishItem, item_id)
                 if item is None:
                     continue
-                source_title = item.source_record.original_title
-                source_body = item.source_record.original_body
-                source_thumbnail_url = item.source_record.thumbnail_url
                 log = PublishLog(
                     publish_item_id=item_id,
                     platform_id=platform["id"],
@@ -183,18 +256,27 @@ async def publish_batch(
                         is_active=True,
                     )
                 )
+                post: dict | None = None
                 media_ids: list[int] = []
-                featured_media_id: int | None = None
-                if source_thumbnail_url:
-                    uploaded_media = publisher.upload_media_from_url(source_thumbnail_url)
-                    featured_media_id = int(uploaded_media["id"])
-                    media_ids.append(featured_media_id)
-                post = publisher.create_post(
-                    title=source_title,
-                    content=source_body,
-                    status="draft",
-                    featured_media_id=featured_media_id,
-                )
+                last_exc: BaseException | None = None
+                for attempt in range(PUBLISH_504_MAX_RETRIES + 1):
+                    try:
+                        post, media_ids = _publish_post_with_media(
+                            publisher,
+                            title=publish_title,
+                            content=publish_content,
+                            thumbnail_url=publish_thumbnail_url,
+                        )
+                        last_exc = None
+                        break
+                    except Exception as exc:  # noqa: BLE001
+                        last_exc = exc
+                        if _is_gateway_timeout_error(exc) and attempt < PUBLISH_504_MAX_RETRIES:
+                            time.sleep(PUBLISH_504_RETRY_BASE_DELAY_SEC * (2**attempt))
+                            continue
+                        raise
+                if post is None:
+                    raise last_exc or RuntimeError("发布失败")
                 with db_factory() as db:
                     log = db.get(PublishLog, log.id)
                     if log is None:
